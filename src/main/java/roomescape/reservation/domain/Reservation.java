@@ -78,8 +78,8 @@ public class Reservation {
         }
     }
 
-    public boolean isWaiting() {
-        return reservationStatus == ReservationStatus.WAITING;
+    public boolean isPending() {
+        return reservationStatus == ReservationStatus.PENDING;
     }
 
     public void pending(){

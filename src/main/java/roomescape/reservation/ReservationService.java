@@ -123,22 +123,24 @@ public class ReservationService {
         final Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(ReservationNotFoundException::new);
 
-        pendingNextReservation(reservation);
+        if(reservation.isPending()){
+            pendingNextReservation(reservation);
+        }
 
         reservationRepository.deleteById(id);
     }
 
     private void pendingNextReservation(final Reservation reservation) {
-        if (reservation.isWaiting()) {
-            return;
-        }
-
         final List<Reservation> waitingReservations = reservationRepository.findAllByDateAndReservationTimeAndThemeAndReservationStatusOrderByAsc(
                 reservation.getDate(),
                 reservation.getReservationTime(),
                 reservation.getTheme(),
                 ReservationStatus.WAITING
         );
+        pendingToFirstReservation(waitingReservations);
+    }
+
+    private void pendingToFirstReservation(final List<Reservation> waitingReservations) {
         if (!waitingReservations.isEmpty()) {
             final Reservation nextReservation = waitingReservations.getFirst();
             nextReservation.pending();

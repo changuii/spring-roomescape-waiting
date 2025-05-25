@@ -59,10 +59,10 @@ class ReservationTest {
         }).isInstanceOf(ReservationPastTimeException.class);
     }
 
-    @DisplayName("Reservation의 상태가 Waiting이라면, true 아니라면 false를 반환한다.")
+    @DisplayName("Reservation의 상태가 Pending이라면, true 아니라면 false를 반환한다.")
     @ParameterizedTest
-    @CsvSource(value = {"WAITING:true", "PENDING:false"}, delimiter = ':')
-    void isWaiting(final ReservationStatus status, final boolean expected) {
+    @CsvSource(value = {"WAITING:false", "PENDING:true"}, delimiter = ':')
+    void isPending(final ReservationStatus status, final boolean expected) {
         // given
         final LocalDateTime currentDateTime = LocalDateTime.of(2024, 12, 1, 12, 0);
         final Member member = new Member("email", "pass", "boogie", MemberRole.MEMBER);
@@ -73,7 +73,7 @@ class ReservationTest {
         final Reservation reservation = Reservation.of(date, member, reservationTime, theme, status, currentDateTime);
 
         // when
-        final boolean actual = reservation.isWaiting();
+        final boolean actual = reservation.isPending();
 
         // then
         assertThat(actual).isEqualTo(expected);
